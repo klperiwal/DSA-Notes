@@ -4,4 +4,180 @@ Backtracking is a form of recursion.
 Backtracking is a sort of refined brute force. At each node, we eliminate choices that are obviously
 not possible and proceed to recursively check only those that have potential.
 
+* N-Queens Problem:
+Place 'n' queens on a (n×n) chessboard such that no two queens can attack each other.
+Find all the distinct solutions
 
+vector<int> temp;
+    vector<vector<int>>ans;
+    bool safe(int col,int row)
+    {
+        if(col==1) 
+            return true;
+        for(int i=0;i<temp.size();i++) 
+        {
+            int c=i+1, r=temp[i];
+            if(r==row || (row-r==col-c) || (col-c==r-row)) 
+                return false;
+        }
+        return true;
+    }
+    void fun(int n,int ctr=1)
+    {
+        if(ctr>n) 
+            ans.push_back(temp);
+        for(int i=1;ctr<=n && i<=n;i++) 
+        {
+            if(safe(ctr,i))
+            {
+                temp.push_back(i);
+                fun(n,ctr+1);
+                temp.pop_back();
+            }
+        }
+    }
+    
+    vector<vector<int>> nQueen(int n) {
+        fun(n);
+        return ans;
+    }
+
+
+* Rat in a maze:
+- Rat is present at (0,0) and wants to reach the end (n-1,n-1).
+- Can only move if arr[i][j]=1
+- Give all the possible ways (UDLR) string to reach the end point.
+
+vector<string>v;
+    void helper(vector<vector<int>> &arr, int &n, int i, int j, string str) 
+    {
+        if ((i==n-1 && j==n-1) && (arr[i][j]==1)) 
+            v.push_back(str);
+        if (i<0 || j<0 || i>=n || j>=n) 
+            return;
+        if (arr[i][j]==1) 
+        {
+            arr[i][j]=0;
+            helper(arr, n, i+1, j, str+"D");
+            helper(arr, n, i-1, j, str+"U");
+            helper(arr, n, i, j+1, str+"R");
+            helper(arr, n, i, j-1, str+"L");
+            arr[i][j] = 1;
+        }
+        return;
+    }
+    vector<string> findPath(vector<vector<int>> &arr, int n) {
+        helper(arr, n, 0, 0, "");
+        return v;
+    }
+
+
+* Permutations of a String:
+void solve(string s,int index,vector<string>& ans)
+        {
+            if(index>=s.length())
+            {
+                ans.push_back(s);
+                return;
+            }
+            for(int j=index;j<s.length();j++)
+            {
+                swap(s[index],s[j]);
+                solve(s,index+1,ans);
+                swap(s[index],s[j]);
+            }
+        }
+        vector<string>find_permutation(string S)
+        {
+            vector<string> ans;
+            int index=0;
+            solve(S,index,ans);
+            sort(ans.begin(),ans.end());
+            ans.erase(unique(ans.begin(),ans.end()),ans.end());
+            return ans;
+        }
+
+
+* Solve the Sudoku:
+
+//Function to find a solved Sudoku. 
+    bool isValid(int row, int col, int val, int a[N][N]) 
+    {
+        for(int i=0;i<9;i++) 
+        {
+            if(a[row][i]==val || a[i][col]==val) 
+                return 0;
+            if(a[3*(row/3)+(i/3)][3*(col/3)+(i%3)]==val) 
+                return 0;
+        }
+        return 1;
+    }
+    bool SolveSudoku(int a[N][N])  
+    { 
+        for(int i=0;i<N;i++)
+            for(int j=0;j<N;j++) 
+            {
+                if(a[i][j]==0) 
+                {
+                    for(int k=1;k<=9;k++)
+                        if(isValid(i,j,k,a)) 
+                        {
+                           a[i][j]=k;
+                           if(SolveSudoku(a)) return 1;
+                           a[i][j]=0;
+                        }
+                   
+                    return 0;
+                }
+            }
+
+        return 1;
+    }
+    
+    //Function to print grids of the Sudoku.
+    void printGrid (int grid[N][N]) 
+    {
+        for(int i=0;i<N;i++)
+        {
+            for(int j=0;j<N;j++)
+                cout<<grid[i][j]<<" ";
+            cout<<endl;
+        }
+    }
+
+
+* Check whether a word exists in a matrix:( Only 4 directions - UDLR)
+
+bool solve(int index,int i,int j,int n,int m,vector<vector<char>>&board,vector<vector<int>>&vis,string &word)
+    {
+        if(index==word.size())
+            return true;
+        if(i<0 || j<0 ||i==n ||j==m ||vis[i][j]|| word[index]!=board[i][j])
+            return false;
+       
+        vis[i][j]=1;
+        bool l1=solve(index+1,i-1,j,n,m,board,vis,word);  // up
+        bool l2=solve(index+1,i+1,j,n,m,board,vis,word);  // down
+        bool l3=solve(index+1,i,j-1,n,m,board,vis,word);  // left
+        bool l4=solve(index+1,i,j+1,n,m,board,vis,word);  // right
+        vis[i][j]=0;
+            return (l1||l2||l3||l4);
+    }
+    
+    bool isWordExist(vector<vector<char>>& board, string word) 
+    {
+        int n=board.size();
+        int m=board[0].size();
+        vector<vector<int>>vis(n,vector<int>(m,0));
+        
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<m;j++)
+                if(board[i][j]==word[0])
+                {
+                    if(solve(0,i,j,n,m,board,vis,word))
+                        return true;
+                }
+        }
+        return false;
+    }
