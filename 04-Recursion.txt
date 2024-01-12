@@ -1,0 +1,179 @@
+	** RECURSION
+
+Any function which calls itself is called recursive. A recursive method solves a problem by
+calling a copy of itself to work on a smaller problem. This is called the recursion step. The
+recursion step can result in many more such recursive calls.
+Recursive code is generally shorter and easier to write than iterative code. Generally, loops are 
+turned into recursive functions when they are compiled or interpreted.
+
+void recfun(int a)
+{
+    if(a==0)
+        return;
+
+    cout<<a<<" ";
+    recfun(a-1);
+    cout<<a<<" ";
+}
+If a=3   Output--> 3 2 1 1 2 3
+TC: O(n)
+
+
+void recfun(int a)
+{
+    if(a==0)
+        return;
+
+    recfun(a-1);
+    cout<<a<<" ";
+    recfun(a-1);
+}
+If a=3    Output--> 1 2 1 3 1 2 1
+TC: O(2^n)
+
+Generally, iterative solutions are more efficient than recursive solutions [due to the overhead of 
+function calls].An infinite loop could loop forever since there is no extra memory being created but
+if we get infinite recursion, the program may run out of memory and result in stack overflow.
+Any problem that can be solved recursively can also be solved iteratively.
+
+int recfun(int a)
+{
+    if(a==1)
+        return 0;
+    return 1+recfun(a/2);
+}
+Output--> log n
+TC-->log n
+
+void recfun(int a)
+{
+    if(a!=1)
+        recfun(a-1);
+    cout<<a<<" ";
+}
+Output--> (If a==5)   1 2 3 4 5
+TC--> O(n)
+SC--> O(n)
+
+
+* Tail Recursion:
+A function is said to be tail recursive when the recursive call is the last statement that is executed by 
+the function, ie. nothing else is executed after recursive call.
+Tail recursive functions are much faster than non-tail functions as the compiler doesnt use the stack
+frame to calling the recursive function.Hence, the time of popping out from the stack is reduced.
+
+int fact(int a)
+{
+    if(a==0)
+        return 1; 
+    return a*fact(a-1);
+}
+
+
+-->Rope Cutting Problem:
+int piece(int sum,int a,int b, int c)
+{
+    if(sum==0)
+        return 0;
+    if(sum<0)
+        return -1;
+
+    int k=max(piece(sum-a,a,b,c),piece(sum-c,a,b,c),piece(sum-b,a,b,c));
+
+    if(k==-1)
+        return -1;
+    return k+1;
+} 	//TC: O(3^n) 
+
+
+-->Subsets of a string:
+We can generate all subsets for length n string using the subsets of length n-1 string.
+void subsets(string s, string curr=" ",int i=0)
+{
+    if(i==s.length())
+    {
+	cout<<s<<" ";
+	return;	     
+    }
+    subsets(s,curr,i+1);
+    subsets(s,curr+s[i],i+1);
+}
+TC: O(2^n)
+
+-->Subsequence of String:
+#include<bits/stdc++.h>
+using namespace std;
+void printsubs(string input, string output="")
+{
+    if(input.length()==0)
+    {
+        cout<<output<<" ";
+        return;
+    }
+    printsubs(input.substr(1),output);
+    printsubs(input.substr(1),output+input[0]);
+}
+
+int main()
+{
+    string input;
+    cin>>input;
+    printsubs(input);
+    return 0;
+}
+
+--> Tower of Hanoi:
+Algorithm:
+• Move the top n – 1 disks from Source to Auxiliary tower.
+• Move the nth disk from Source to Destination tower.
+• Move the n – 1 disks from Auxiliary tower to Destination tower.
+• Transferring the top n – 1 disks from Source to Auxiliary tower is again a recursive case.
+
+void TOH(int n,char a,char b, char c)
+{
+    if(n==1)
+        cout<<"Move disc "<<n<<" from "<<a<<" to "<<c<<endl;
+    else
+    {
+        TOH(n-1,a,c,b);
+        cout<<"Move disc "<<n<<" from "<<a<<" to "<<c<<endl;
+        TOH(n-1,b,a,c);
+    }
+}
+
+-->Josephus Problem:
+The problem has the following recursive structure. 
+  josephus(n, k) = (josephus(n - 1, k) + k-1) % n + 1
+  josephus(1, k) = 1
+
+int jos(int n,int k)
+{
+    if(n==1)
+        return n;
+    else    
+        return(jos(n-1,k)+k)%n + 1;
+}
+The above problem is the solution when the numbering of the people ranges from 1-n.
+If the people numbers ranges from 0 to n-1
+then the code will slightly change :-  return(jos(n-1,k)+k)%n;
+TC: O(n)
+
+-->Permutations of a string:
+void permute(string s, int i=0)
+{
+    if(i==s.length() || i==s.length()-1)
+    {
+        cout<<s<<" ";
+        return;
+    }
+    for(int j=i;j<s.length();j++)
+    {
+        swap(s[i],s[j]);
+        permute(s,i+1);
+        swap(s[j],s[i]);
+    }
+}
+TC: O(n*n!)
+SC: O(n) 
+
+Note: Most of the recursive calls use auxiliary space.

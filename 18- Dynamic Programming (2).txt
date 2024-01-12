@@ -1,0 +1,313 @@
+	DP continue...
+
+* Perfect Squares:
+Return the least number of perfect square numbers that sum to n
+int numSquares(int n) 
+{
+        vector<int>dp(n+1,0);
+        dp[1]=1;
+        for(int i=2;i<=n;i++)
+        {
+            int k=INT_MAX;
+            for(int j=1;j*j<=i;j++)
+            {
+                int r=i-j*j;
+                k=min(dp[r],k);
+            }
+            dp[i]=k+1;
+        }
+        return dp[n];
+    }
+
+
+* Coin Change:
+Given an infinite supply of each type of coin. 
+Find the total ways to reach out towards a sum.
+
+-- Recursive Solution:
+int getcount(int n,int coin[],int sum)
+{
+    if(sum==0)
+        return 1;
+    if(n==0)
+        return 0;
+
+    int res= getcount(n-1,coin,sum);
+    if(sum>=coin[n-1])
+        res+=getcount(n,coin,sum-coin[n-1]);
+
+    return res; 
+}
+
+-- DP Soln:
+int getcount(int n,int coins[],int sum)
+{
+    int dp[sum+1][n+1];
+    for(int i=0;i<=n;i++)
+        dp[0][i]=1;
+    for(int i=1;i<=sum;i++)
+        dp[i][0]=0;
+
+    for(int i=1;i<=sum;i++)
+        for(int j=1;j<=n;j++)
+        {
+            dp[i][j]=dp[i][j-1];
+            if(coins[j-1]<=i)
+                dp[i][j]+=dp[i-coins[j-1]][j];
+        }
+    return dp[sum][n];
+}
+
+
+* Edit Distance:
+Minimum number of operation required to convert one string to another.
+
+-Recursive Soln-
+int ed(string s1,string s2,int m,int n)
+{
+    if(m==0)    return n;
+    if(n==0)    return m;
+
+    if(s1[m-1]==s2[n-1])
+        return ed(s1,s2,m-1,n-1);
+    else
+    {
+        int k1=ed(s1,s2,m-1,n);
+        int k2=ed(s1,s2,m,n-1);
+        int k3=ed(s1,s2,m-1,n-1);
+        return 1+min(k1,min(k2,k3));
+    }
+}
+
+-DP Soln-
+int ed(string s1,string s2,int m,int n)
+{
+    int dp[m+1][n+1];
+    for(int i=0;i<=m;i++)
+        dp[i][0]=i;
+    for(int i=0;i<=n;i++)
+        dp[0][i]=i;
+
+    for(int i=1;i<=m;i++)
+        for(int j=1;j<=n;j++)
+        {
+            if(s1[i-1]==s2[j-1])
+                dp[i][j]=dp[i-1][j-1];  
+            else
+                dp[i][j]=1+min(dp[i-1][j-1],min(dp[i-1][j],dp[i][j-1]));
+        }
+
+    return dp[m][n];
+}
+
+* Longest Incresing Subsequence:
+int ceil(int tail[],int s,int e,int key)
+{
+    while(s<e)
+    {
+        int mid=(s+e)/2;
+        if(tail[mid]>=key)
+            e=mid;
+        else    
+            s=mid+1;   
+    }
+    return e;
+}
+int lis(int arr[],int n)
+{
+    int tail[n];
+    int k=0;
+    tail[0]=arr[0];
+
+    for(int i=1;i<n;i++)
+    {
+        if(arr[i]>tail[k])
+            tail[++k]=arr[i];
+        else
+        {
+            int x=ceil(tail,0,k,arr[i]);
+            tail[x]=arr[i];
+        }
+    }
+    return k+1;
+}
+
+* Minimum elements to be deleted from an array to make it sorted:
+	Ans: (Size of array) - (LIS of array)
+
+* Maximum sum Increasing Subsequence:
+Its not necessary that it should be LIS.
+int msis(int arr[],int n)
+{
+    int temp[n];
+    for(int i=0;i<n;i++)
+    {
+        temp[i]=arr[i];
+        for(int j=0;j<i;j++)
+        {
+            if(arr[j]<arr[i])
+                temp[i]=max(temp[i],arr[i]+temp[i]);
+        }
+    }
+    int res=te mp[0];
+    for(int i=1;i<n;i++)
+        res=max(res,temp[i]);
+    return res;
+}
+
+
+* 0 1 Knapsack :
+- Recursive Soln-
+int knapsack(int n,int wt[],int val[],int W)
+{
+    if(n==0 || w==0)
+        return 0;
+
+    int k=knapsack(n-1,wt,val,W);
+    if(wt[n-1]>W)
+        return k;
+    else
+        return max(k,val[n-1]+knapsack(n-1,wt,val,W-wt[n-1]));
+}
+
+-- DP Solution:
+int knapsack(int W,int wt[],int val[],int n)
+{
+    vector<vector<int>>dp(n+1,vector<int>(W+1,0));
+    for(int i=1;i<=n;i++)
+        for(int j=1;j<=W;j++)
+        {
+            dp[i][j]=dp[i-1][j];
+            if(wt[i-1]<=j)
+                dp[i][j]=max(dp[i][j],val[i-1]+dp[i-1][j-wt[i-1]]);
+        }
+    
+    return dp[n][W];
+}
+
+
+* Optimal Strategy for a game:
+
+-Recursive Soln:
+int game(int arr[],int i,int j,int sum)
+{
+    if(j==i+1)
+        return max(arr[i],arr[j]);
+    
+    int k1=arr[i]+game(arr,i+1,j,sum-arr[i]);
+    int k2=arr[j]+game(arr,i,j-1,sum-arr[j]);
+    return max(k1,k2);
+}
+int soln(int arr[],int n)
+{
+    int sum=0;
+    for(int i=0;i<n;i++)
+        sum+=arr[i];
+    return game(arr,0,n-1,sum);
+}
+
+- DP Soln:
+int soln(int arr[],int n)
+{
+    int dp[n][n];
+    for(int i=0;i<n-1;i++)
+        dp[i][i+1]=max(arr[i],arr[i+1]);
+
+    for(int k=3;k<n;k=k+2)    
+        for(int i=0;i+k<n;i++)
+        {
+            int j=i+k;
+            int k1=arr[i]+min(dp[i+2][j],dp[i+1][j-1]);
+            int k2=arr[j]+min(dp[i+1][j-1],dp[i][j-2]);
+            dp[i][j]=max(k1,k2);
+        }
+    return dp[0][n-1];
+}
+
+
+*Egg Droping Puzzle:
+Find the minimum number of trials need to find the threshold floor.
+int eggDrop(int n, int k) 
+    {
+        vector<int>dp(n+1);
+        int res=0;
+        while(dp[n]<k)
+        {
+            for(int i=n;i>0;i--)
+                dp[i]+=dp[i-1]+1;
+            res++;
+        }
+        return res;
+    }
+TC: O(f^2*e)
+SC: O(fe)
+
+
+* Matrix Chain Multiplication:
+int mcm(int n,int *arr)
+{
+    int dp[n][n];
+    for(int i=0;i<n-1;i++)
+	dp[i][i+1]=0;
+	
+    for(int gap=2;gap<n;gap++)
+    {
+	for(int i=0;i+gap<n;i++)
+	{
+	    int j=i+gap;
+	    dp[i][j]=INT_MAX;
+	    for(int k=i;k<j;k++)
+        		dp[i][j]=min(dp[i][j],dp[i][k]+dp[k][j]+arr[i]*arr[j]*arr[k]);
+	 }
+     }
+     return dp[0][n-1];
+}
+TC: O(n^3)
+SC: O(n^2)
+
+
+*Count BST with n keys:
+int count(int n)
+{
+    if(n==0)
+	return 0;
+
+    vector<int>dp(n+1,0);
+    dp[0]=1;
+    for(int i=1;i<=n;i++)
+	for(int j=0;j<i;j++)
+  	    dp[i]+=dp[j]*dp[i-j-1];
+	
+     return dp[n];
+}
+// Another Solution: return --> (2n)! / (n! * (n+1)!)
+
+
+
+* Pallindrome Partitioning:
+Minimum number of partitioning needed to make each part pallindrome.
+
+int parpal(string s)
+{
+    int n=s.length();
+    int dp[n][n];
+    for(int i=0;i<n;i++)
+	dp[i][i]=0;
+	
+    for(int gap=1;gap<n;gap++)
+    {
+	for(int i=0;i+gap<n;i++)
+	{
+		int j=i+gap;
+		if(isPallindrome(s,i,j))
+		{
+             	    dp[i][j]=0;
+	    	    continue;
+		}
+		dp[i][j]=INT_MAX;
+		for(int k=i;k<j;k++)
+  		    dp[i][j]=min(dp[i][j],1+dp[i][k]+dp[k+1][j]);
+	}
+    }
+    return dp[0][n-1];
+}

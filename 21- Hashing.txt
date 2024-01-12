@@ -1,0 +1,195 @@
+     HASHING
+Hashing is a technique used for storing and retrieving information as quickly as possible. It is
+used to perform optimal searches and is useful in implementing symbol tables.
+
+It is mainly used in 3 functions: Search, Insert and Delete.
+All these 3 functions takes constant O(1) time.
+
+Not useful for: Finding closest value -AVL or RED BLACK TREE
+                             Sorted Data- same
+                             Prefix Searching -Trie Data Structure
+
+* Applications of Hashing:
+- Dictionary
+- Database Indexing
+- Cryptography
+- Caches
+- Symbol Tables in Compiler or interpreter.
+- Getting data from databases.
+
+-- How does Hash function works: 
+- It should always map a large key to the same small key.
+- Should generate values form 0 to n-1.
+- Should be fast. O(1) for integers and O(len) for string of length len.
+- Should uniformly distribute large keys to Hash tables slot.
+
+If we know the keys in advance, we can use Proper Hashing.
+If we dont know the keys in advance, we can use either Chaining or Open Addressing.
+
+-->Collisions: 
+Hash functions are used to map each key to a different address space, but practically it is not possible to 
+create such a hash function and the problem is called collision. Collision is the condition where two or more
+records are stored in the same location.The process of finding an alternate location is called collision resolution.
+
+Collisions can be resolved by:
+-- Direct Chaining: 
+	An array of linked list application
+	Separate chaining
+-- Open Addressing:
+	Array-based implementation
+	Linear probing (linear search)
+	Quadratic probing (nonlinear search)
+	Double hashing (use two hash functions)
+
+* Chaining:
+Let,  m- number of keys in the table.
+	n- number of slots in the HashTable.
+
+Load factor α=m/n;
+Usually α is near or eual to 1.
+
+Expected Chain length=α
+Expected Time to search= O(1+α)
+
+-->Pair with 0 sum:
+bool search(int a,int arr[],int sum)
+{
+	unordered_set<int>s;
+	for(int i=0;i<a;i++)
+	{
+		if(s.find(sum-arr[i])!=s.end())
+			return true;		
+		
+		s.insert(sum);
+	}
+	return false;
+}
+
+--> Subarray with 0 sum:
+bool search(int a,int arr[])
+{
+	unordered_set<int>s;
+	int sum=0;
+	for(int i=0;i<a;i++)
+	{
+		sum=sum+arr[i];
+		if(s.find(sum)!=s.end())
+			return true;		
+
+		s.insert(sum);
+		if(sum==0)
+			return true;
+	}
+	return false;
+}
+
+
+-->Subarray with given sum:
+bool sumpresent(int a,int arr[],int key)
+{
+    int sum=0;
+    set<int>s;
+    for(int i=0;i<a;i++)
+    {
+        sum=sum+arr[i];
+        if(sum==key)
+            return true;
+        if(s.find(sum-key)!=s.end())
+            return true;
+
+        s.insert(sum);
+    }
+    return false;
+}
+
+-->Longest subarray with given sum:
+int maxlength(int a,int arr[],int key)
+{
+    int sum=0, res=0;
+    map<int,int>m;
+
+    for(int i=0;i<a;i++)
+    {
+        sum=sum+arr[i];
+        if(sum==key)
+            res=i+1;
+        if(m.find(sum)==m.end())
+            m.insert({sum,i});
+        if(m.find(sum-key)!=m.end())
+            res=max(res,i-m[sum-key]);
+    }
+    return res;
+}
+
+-->Longest Subaaray with equal 0's and 1's :-
+int maxlen(int a, int arr[])
+{   
+    int sum=0, res=0;
+    map<int,int>m;
+    m[0]=-1;
+
+    for(int i=0;i<a;i++)
+    {
+        if(arr[i]==1)
+            sum++;
+        else 
+            sum--;
+
+        if(m.find(sum)!=m.end())
+            res=max(res,i-m[sum]);
+        else
+            m[sum]=i;
+    }
+    return res;
+}
+
+-->Longest Common Span with same sum in 2 binary arrays:
+- Subtract any one of the array from another.
+- Then apply the same concept of finding max sum 0.	
+
+-->Longest Consequetive Subsequence:
+Naive Method: Sort the array.
+Efficient Method:
+int lcs(int a,int arr[])
+{
+	int res=1;
+	map<int,int>m;
+	for(int i=0;i<a;i++)
+		m[arr[i]]++;
+	for(int i=0;i<a;i++)
+	{
+		int sum=1;
+		int curr=1;
+		while(m.find(arr[i]-curr)!=m.end())
+		{
+			curr++;
+			sum++;
+		}
+		res=max(sum,res);
+	}
+	return res;
+}
+
+-->Find k most frequent elements:
+static bool mycomp(pair<int,int>a,pair<int,int>b)
+    {
+        if(a.second==b.second)
+            return b.second>a.second;
+            
+        return a.first>b.first;
+    }
+    vector<int> kfrequent(int arr[], int n, int k) 
+    { 
+        map<int,int>m;
+        for(int i=0;i<n;i++)
+            m[arr[i]]++;
+            
+        vector<pair<int,int>>v(m.begin(),m.end());
+        sort(v.begin(),v.end(),mycomp);
+        
+        vector<int>res;
+        for(int i=0;i<k;i++)
+            res.push_back(v[i].first);
+            
+        return res;
+    }

@@ -1,0 +1,223 @@
+-->Insert an Element at a given position in a Linked List:
+Node *InsertPos(Node *head,int pos,int data)
+{
+	Node *temp=new Node(data);
+	if(pos==1)
+	{
+		temp->next=head;
+		return temp;
+	}
+	Node *a=head;
+	for(int i=0;i<pos-1 && a!=NULL; i++)
+		a=a->next;
+	if(a==NULL)
+		return head;
+	temp->next=a->next;
+	a->next=temp;
+
+	return head;
+}
+
+-->Reverse a LL:
+Node *reveresell(Node* head)
+{
+        Node* curr=head;
+	Node* prev=NULL;
+	while(curr!=NULL)
+	{
+		Node *next=curr->next;
+		curr->next=prev;
+		prev=curr; curr=next;
+	}
+	return prev;
+}
+
+-->Search in a Linked List:
+Worst Case TC: O(n)
+Node *Search(Node *head,int x)
+{
+	int pos=1;
+	Node *a=head;
+	while(a!=NULL)
+	{
+		if(a->data==x)
+			return pos;
+		a=a->next;
+		pos++;
+	}
+	return -1;
+}
+
+
+ * Doubly Linked List:
+The advantage of a doubly linked list (also called two – way linked list) is that given a node in
+the list, we can navigate in both directions.
+
+Structure:
+struct Node
+{
+	int data;
+	Node *next;
+	Node *prev;
+	Node(int x){
+		data=x;
+		prev=NULL;
+		next=NULL;
+	}
+};
+-->Advantages:
+- Can be traversed in both directions.
+- Can add/delete a node in O(1) time anywhere in the list.
+- Insert/Delete from both ends in O(1) time by maintaining tail.
+
+-->Disadvantages:
+- Each node requires an extra pointer, requiring more space.
+- The insertion or deletion of a node takes a bit longer (more pointer operations).
+	ie. The code becomes complex.
+
+
+-->Add an element in the starting of DLL:
+Node InsertBegin(Node *head, int data)
+{
+	Node *temp=new Node(data);
+	if(head!=NULL){
+		temp->next=head;
+		head->prev=temp;
+	}	
+	return temp;
+}
+
+-->Add an element at the end of DLL:
+Node *insertEnd(Node *head, int data)
+{
+	Node *temp=new Node(data);
+	if(head==NULL)
+		return temp;
+	
+	Node *a=head;
+	while(a->next!=NULL)
+		a=a->next;
+	
+	a->next=temp;
+	temp->prev=a;
+	return head;
+}
+
+-->Reversing a DLL:
+Node *reverseDLL(Node *head)
+{
+	Node *prev=NULL;
+	Node *curr=head;
+
+	if(head==NULL || head->next=NULL)
+		return head;
+	while(curr!=NULL)
+	{
+		prev=curr->prev;
+		curr->prev=curr->next;
+		curr->next=prev;
+		curr=curr->prev;
+	}
+	return prev->prev;
+}
+
+--> Delete the starting element of DLL:
+Node *delelement(Node *head)
+{
+	if(head==NULL || head->next==NULL)
+		return NULL;
+
+	Node *temp=head;
+	head=head->next;
+	head->prev=NULL;
+	delete temp;
+	return head;
+}
+
+	
+** Detect a loop in Linked List:
+Method -1: 
+Here to detect the loop in efficient time we modify the structure of LL.
+struct Node{
+	int data;
+	Node *next;
+	bool visited;
+	Node(int x)
+	{
+		data=x;
+		next=NULL;
+		visited=false;
+	}
+};
+
+Method -2:
+Modify the linked list pointers
+Create a dummy node and assign all the the nodes to the the dummy node.
+If the same node appears twice means there is a loop in array.
+BUT: Problem is the LL gets completely distorted.
+
+Method -3:
+Using Hasmaps:
+O(n): Both time and space complexity.
+bool isloop(Node *head)
+{
+	unordered_set<Node *>s;
+	for(int Node *i=head;i!=NULL;i++)
+	{
+		if(s.find(i) !=s.end())
+			return true;
+		
+		s.insert(i);
+	}
+	return false;
+}
+
+--> Floyd's Cycle:
+This is based on the concept that if there is a loop, maintain a slow pointer and a fast pointer and they both 
+will definately meet at some point.
+Here, slow pointer moves by 1 unit whereas the fast pointer moves by 2 units.
+
+bool isloop (Node *head)
+{
+	Node *fast=head;
+	Node *slow=head;
+	while(fast!=NULL && fast->next!=NULL)
+	{
+		fast=fast->next->next;
+		slow=slow->next;
+	
+		if(fast==slow)
+			return true;
+	}
+	return false;
+}
+
+In Floyd's cycle, the distance between slow and fast keeps on increasing by 1 everytime.
+When the distance equals the length of the cycle they meet.
+
+* Detect and remove a loop in LL :-
+
+void removeloop(Node *head)
+{
+    Node *fast=head;
+    Node *slow=head;
+
+    while(fast!=NULL && fast->next!=NULL)
+    {
+        slow=slow->next;
+        fast=fast->next->next;
+        if(slow==fast)
+            break;
+    }
+    if(slow !=fast)
+        return;
+
+    slow=head;
+    while(slow->next != fast->next)
+    {
+        slow=slow->next;
+        fast=fast->next;
+    }
+    fast->next=NULL;
+    return;
+}

@@ -1,0 +1,50 @@
+ **DATA STRUCTURES AND ALGORITHMS:
+
+*Data Structures:-
+  Data Structure can be defined as the group of data elements which provides an efficient way of storing 
+  and organising data in the computer so that it can be used efficiently.
+
+* Data Type:- 
+    A data type in a programming language is a set of data with predefined values.
+    Examples of data types are: integer, floating point, unit number, character,string, etc.
+    A data type reduces the coding effort.
+    
+   There are two types of data types:
+     i- System Defined Datatype: Data types that are defined by system are called primitive data types. 
+     The primitive data types provided by many programming languages are: int, float, char, double, bool, etc.
+     For the same primitive data type, different languages may use different sizes.
+ 
+    ii-User Defined Datatype: As the name suggest, user can define their own datatypes in the system.
+       Eg= Sturctures in C/C++  and classes in Java.
+       This gives more flexibility and comfort in dealing with computer memory.
+
+* Data Structures:-
+  Data structure is a particular way of storing and organizing data in a computer so that it can be used 
+  efficiently. It is a special format for organizing and storing data. General data structure types include 
+  arrays, files, linked lists, stacks, queues, trees, graphs etc.
+  
+  There are two types of Data Structures: 
+  i- Linear data structures: Elements are accessed in a sequential order but it is not compulsory to 
+   store all elements sequentially. Examples: Linked Lists, Stacks and Queues.
+ ii- Non – linear data structures: Elements of this data structure are stored/accessed in a
+   non-linear order. Examples: Trees and graphs.   
+
+* Abstract Data Types (ADTs):
+  ADTs are the ways of classifying data structures by providing a minimal expected interface and some
+  sets of methods. In short, the combination of Data Structures with their operation is called ADTs.
+  An ADT consits of two parts:  i- Declaration of data
+                                                  ii- Declaration of operations.
+
+* Algorithm:
+  An algorithm is the step-by-step unambiguous instructions to solve a given problem. Algorithm analysis
+  helps us to determine which algorithm is most efficient in terms of time and space consumed.
+   -->RunTime Analysis: It is the process of determining how processing time increases as the size 
+                                        of the problem (input size) increases.
+
+* Rate of Growth:
+  The rate at which the running time increases as a function of input is called rate of growth.
+  For a given function ignore the low order terms that are relatively insignificant (for large value of n)
+   ie. (n^4 + 5n^2 + 500) is appx equal to n^4.
+
+
+ 

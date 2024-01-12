@@ -1,0 +1,276 @@
+	QUEUE
+
+A queue is an ordered list in which insertions are done at one end (rear) and deletions are done at 
+other end (front). The first element to be inserted is the first one to be deleted. Hence, it is called 
+First in First out (FIFO) or Last in Last out (LILO) list.
+
+When an element is inserted in a queue, the concept is called EnQueue, and when an element is
+removed from the queue, the concept is called DeQueue.DeQueueing an empty queue is called 
+underflow and EnQueuing an element in a full queue is called overflow. 
+
+The concept of a queue can be explained by observing a line at a reservation counter. When we
+enter the line we stand at the end of the line and the person who is at the front of the line is the one
+who will be served next. He will exit the queue and be served.
+
+The following operations make a queue an ADT. Insertions and deletions in the queue must
+follow the FIFO scheme. For simplicity we assume the elements are integers.
+
+-- Main Queue Operations
+     • EnQueue(int data): Inserts an element at the end of the queue
+     • int DeQueue(): Removes and returns the element at the front of the queue
+-- Auxiliary Queue Operations
+     • int Front(): Returns the element at the front without removing it
+     • int QueueSize(): Returns the number of elements stored in the queue
+     • int IsEmptyQueue(): Indicates whether no elements are stored in the queue or not
+
+
+In Queues,
+Enque- Adding an element at the end of the list.
+Deque- Deleting the element from the starting of the list.
+
+struct Myqueue{
+    int size,cap;
+    int *arr;
+    Myqueue(int x)
+    {
+        cap=x;
+        size=0;
+        arr=new int[cap];
+    }
+
+    bool isfull()
+    {
+        if(size==cap)
+            return true;
+        return false;
+    }
+    
+    bool isEmpty()
+    {
+        if(size==0)
+            return true;
+        return false;
+    }
+    
+    void enque(int x)
+    {
+        if(isfull())
+            return;
+        arr[size]=x;
+        size++;
+    }
+
+    void deque()
+    {
+        if(isEmpty())
+            return;
+        for(int i=0;i<size-1;i++)
+            arr[i]=arr[i+1];
+        size--;
+    }
+
+    int getfront()
+    {
+        if(size==0)
+            return -1;
+        return arr[0];
+    }
+
+    int getrear()
+    {
+        if(size==0)
+            return -1;
+        return arr[size-1];
+    }
+};
+
+-->Enque and Deque using Linked List:
+struct Node
+{
+    int data;
+    Node *next;
+    Node(int x){
+        data=x;
+        next=NULL;
+    }
+};
+
+struct Queue
+{
+    Node *front,*rear;
+    Queue()
+    {
+        front=NULL;
+        rear=NULL;
+    }
+    void enque(int x)
+    {
+        Node *temp=new Node(x);
+        if(front==NULL)
+            front=rear=temp;
+        else
+        {
+            rear->next=temp;
+            rear=temp;
+        }
+    }
+    void deque()
+    {
+        if(front==NULL)
+            return;
+        Node *temp=front;
+        front=front->next;
+        if(front==NULL)
+            rear=NULL;
+        
+        delete temp;
+    }
+};
+All the functions of queue in C++ operate in O(1) time.
+
+--> Queue in C++ STL:
+#include<bits/stdc++.h>
+using namespace std;
+int main()
+{
+    queue<int>q;
+    q.push(10);
+    q.push(20);
+    q.push(30);
+    q.push(40);
+    q.push(50);
+    cout<<q.front()<<" "<<q.back()<<endl; //10 50
+    q.pop();
+    cout<<q.front()<<" "<<q.back()<<endl; //20 50
+   	 cout<<q.size()<<endl;//4
+    while(!q.empty())
+    {
+        cout<<q.front()<<" "<<q.back()<<endl;
+        q.pop();
+    }
+    return 0;
+}
+
+--> Implementing Stack using Queue:-
+Here, all the operations are simple and can be done in O(1).
+But the push operation take O(n) time.
+struct Stack
+{
+    queue<int>q1,q2;
+    int size()
+    {
+        return q1.size();
+    }
+    int top()
+    {
+        return q1.front();
+    }
+    int pop()
+    {
+        int k=q1.front();
+        q1.pop();
+        return k;
+    }
+    void push(int x)
+    {
+        while(!q1.empty())
+        {
+            q2.push(q1.front());
+            q1.pop();
+        }
+        q1.push(x);
+        while(!q2.empty())
+        {
+            q1.push(q2.front());
+            q2.pop();
+        }
+    }
+};
+	
+-->Implementing Queue using Stack:
+struct Queue
+{
+    stack<int>s1,s2;
+    int size()
+    {
+        return s1.size();
+    }
+    int front()
+    {
+        return s1.top();
+    }
+    int pop()
+    {
+        int k=s1.top();
+        s1.pop();
+        return k;
+    }
+    void push(int x)
+    {
+        s2.push(x);
+        while(!s1.empty())
+        {
+            s2.push(s1.top());
+            s1.pop();
+        }
+        while(!s2.empty())
+        {
+            s1.push(s2.top());
+            s2.pop();
+        }
+    }
+};
+
+-->Reversing a queue:
+* Iterative Soln=
+void reverse(queue<int>&q)
+{
+    stack<int>s;
+    while(!q.empty())
+    {
+        s.push(q.front());
+        q.pop();
+    }
+    while(!s.empty())
+    {
+        q.push(s.top());
+        s.pop();
+    }
+}
+
+* Recursive soln=
+void reverse(queue<int>&q)
+{
+    if(q.empty())
+        return;
+    	
+    int x=q.front();
+    q.pop();
+    reverse(q);
+    q.push(x);
+}
+TC: O(n)    and   SC: O(n)
+
+
+-->Generate Numbers with given Digits:
+Given a number n, print first n natural numbers(in increasing order)
+such that all these numbers lies in the given set of numbers.
+Ex: If the set is {5,6} and n=7
+	O/P: 5 6 55 56 65 66 555
+
+void printfirstN(int n,int x1,int x2)
+{
+    string a=to_string(x1);
+    string b=to_string(x2);
+    queue<string>q;
+    q.push(a);
+    q.push(b);
+    for(int i=0;i<n;i++)
+    {
+        string str=q.front();
+        cout<<str<<" ";
+        q.pop();
+        q.push(str+a);
+        q.push(str+b);
+    }
+}

@@ -1,0 +1,315 @@
+	 GRAPHS:
+
+A graph is a pair (V, E), where V is a set of nodes, called vertices, and E is a collection of pairs of 
+vertices, called edges.
+• Vertices and edges are positions and store elements
+• When an edge connects two vertices, the vertices are said to be adjacent to each
+   other and the edge is incident on both vertices.
+• A graph with no cycles is called a tree. A tree is an acyclic connected graph.
+• A self loop is an edge that connects a vertex to itself.
+• The Degree of a vertex is the number of edges incident on it.
+• We say that one vertex is connected to another if there is a path that contains both of them.
+• A graph is connected if there is a path from every vertex to every other vertex.
+• If a graph is not connected then it consists of a set of connected components.
+• A directed acyclic graph [DAG] is a directed graph with no cycles.
+
+* Applications of Graph:
+• Representing relationships between components in electronic circuits
+• Transportation networks: Highway network, Flight network
+• Computer networks: Local area network, Internet, Web
+• Databases: For representing ER diagrams in databases.
+
+
+* Matrix Representation of Graphs:
+In this method, we use a matrix with size V × V. The values of matrix are boolean. Let us assume
+the matrix is Adj. The value Adj[u, v] is set to 1 if there is an edge from vertex u to vertex v and 0
+otherwise.
+-Operations Time:
+ Checking the adjacent elements: O(1)
+ Find all the vertices adjacent to u: O(v)
+ Degree of u: O(v)
+ Add/ Remove a edge: O(1)
+	 
+
+* List Implementation of graph:
+#include<bits/stdc++.h>
+using namespace std;
+void printgraph(vector<int>adj[],int v)
+{
+    for(int i=0;i<v;i++)
+    {
+        cout<<i<<"--> ";
+        for(auto x: adj[i])
+            cout<<x<<" ";
+
+        cout<<endl;
+    }
+}
+void addEdge(vector<int>*adj,int v,int u)
+{
+    adj[u].push_back(v);
+    adj[v].push_back(u);    
+}
+int main()
+{
+    int v;
+    cin>>v;
+    //where v is the number of vertices of the graph
+    vector<int>adj[v];
+
+    cout<<"How many connections you wanna make: ";
+    int x;
+    cin>>x;
+
+    for(int i=0;i<x;i++)
+    {
+        int a1,a2;
+        cin>>a1>>a2;
+        addEdge(adj,a1,a2);
+    }
+    printgraph(adj,v);
+    return 0;
+}
+
+-->Breadth First Search Traversal:
+The BFS algorithm works similar to level – order traversal of the trees. 
+Like level – order traversal, BFS also uses queues.
+(The first reachables should be printed first, then the second reachbles n so on..)
+
+void bfs(vector<int>adj[],int v,int s)
+{
+    vector<bool>visited(v+1);
+    queue<int>q;
+    visited[s]=1;
+    q.push(s);
+    while(!q.empty())
+    {
+        int u=q.front();
+        q.pop();
+        cout<<u<<" ";
+        for(int v:adj[u])
+            if(!visited[v])
+            {
+                visited[v]=true;
+                q.push(v);
+            }
+    }
+}
+TC: O(V+E)
+SC: O(l) where l is the max number of nodes in a single level.
+If the graph is the diconnected then use the bool function in the main function.
+
+-->Depth First Seach:
+DFS algorithm works in a manner similar to preorder traversal of the trees.
+Initially all vertices are marked unvisited (false). The DFS algorithm starts at a vertex u in the graph.
+By starting at vertex u it considers the edges from u to other vertices. If the edge leads to an already
+visited vertex, then backtrack to current vertex u. If an edge leads to an unvisited vertex, then go to 
+that vertex and start processing from that vertex. That means the new vertex becomes the current
+vertex. Follow this process until we reach the dead-end.
+
+void dfs(vector<int>*adj[],int s,vector<int>&visited)
+{
+    visited[s]=true;
+    cout<<s<<" ";
+    for(int u:adj[s])
+        if(visited[u]==false)
+            dfs(adj,u,visited);
+}
+void DFS(vector<int>*adj[],int s,int n)
+{
+    vector<bool>visited(n,0);
+    dfs(adj,s,visited);
+}
+TC: O(V+E)
+SC: O(h) where h is the max height of the tree
+
+Comparing BFS and DFS, the big advantage of DFS is that it has much lower memory
+requirements than BFS because it’s not required to store all of the child pointers at each level.
+To find shortest paths, BFS is used, whereas for the minimal use of memory space, DFS is used. 
+
+
+* Number of Provinces:
+void dfs(vector<int>adjl[], int v,vector<bool>&vis)
+    {
+        vis[v]=true;
+        for(auto u:adjl[v])
+            if(!vis[u])
+                dfs(adjl,u,vis);
+    }
+    
+    int numProvinces(vector<int>adjl[], int V) 
+{
+        vector<bool>vis(V);
+        int res=0;
+        
+        for(int i=0;i<V;i++)
+            if(!vis[i]){
+                res++;
+                dfs(adjl,i,vis);
+            }
+        return res;
+    }
+
+
+* Distance of nearest cells having 1:
+vector<vector<int>>nearest(vector<vector<int>>grid)
+	{
+	    int n=grid.size();
+	    int m=grid[0].size();
+	    
+	    vector<vector<int>>v(n,vector<int>(m,0));
+	    vector<vector<bool>>vis(n,vector<bool>(m));
+    	               // {r,c},steps
+    	queue<pair<pair<int,int>,int>>q;
+	    
+	    for(int i=0;i<n;i++)
+	        for(int j=0;j<m;j++)
+	        {
+	            if(grid[i][j]==1)
+	            {
+	                vis[i][j]=1;
+	                q.push({{i,j},0});
+	            }
+	        }
+	    
+	    pair<int,int> loc[]={{-1,0},{0,1},{1,0},{0,-1}};
+	    while(!q.empty())
+	    {
+	        int r=q.front().first.first;
+	        int c=q.front().first.second;
+	        int s=q.front().second;
+	        q.pop();
+	        
+	        v[r][c]=s;
+	        for(int i=0;i<4;i++)
+	        {
+	            int r1=r+loc[i].first;
+	            int c1=c+loc[i].second;
+	            
+	            if(r1<0 || r1>=n || c1<0 || c1>=m)
+	                continue;
+	            
+	            if(!vis[r1][c1])
+	            {
+	                vis[r1][c1]=1;
+	                q.push({{r1,c1},s+1});
+	            }
+	        }
+	    }
+	    return v; 
+	}
+
+
+* Grid Unique Path:
+You are given a grid of n * m having 0 and 1 respectively, 0 denotes space, and 1 denotes obstacle.
+Number of ways to reach from top left to bottom right corner.
+Moves: Only right or down
+
+    int mod=1000000007;
+    int ways(int i,int j,int n, int m, vector<vector<int>>& grid,vector<vector<int>>&dp)
+    {
+        if(i<0 || j<0 || grid[i][j]==1)
+            return 0;
+        if(i==0 && j==0)
+            return 1;
+        
+        if(dp[i][j]!=-1)
+            return dp[i][j];
+        
+        int k1=ways(i-1,j,n,m,grid,dp);
+        int k2=ways(i,j-1,n,m,grid,dp);
+        return dp[i][j]=(k1+k2)%mod;
+    }
+    int totalWays(int n, int m, vector<vector<int>>& grid) {
+        if(grid[0][0] || grid[n-1][m-1])
+            return 0;
+            
+        vector<vector<int>>dp(n,vector<int>(m,-1));
+        return ways(n-1,m-1,n,m,grid,dp);
+    }
+
+* Minimum path:
+     int minpath(int n, vector<vector<int>>&matrix)
+    {
+        vector<vector<int>>dp(n,vector<int>(n,0));
+        dp[0][0]=matrix[0][0];
+        for(int i=1;i<n;i++)
+        {
+            dp[0][i]=dp[0][i-1]+matrix[0][i];
+            dp[i][0]=dp[i-1][0]+matrix[i][0];
+        }
+        
+        for(int i=1;i<n;i++)
+            for(int j=1;j<n;j++)
+                dp[i][j]=matrix[i][j]+min(dp[i-1][j],dp[i][j-1]);
+            
+        return dp[n-1][n-1];
+    }
+
+--> Number of Islands:
+void dfs(vector<vector<char>>& grid,int x,int y,vector<vector<bool>>&vis)
+  {
+        int n=grid.size();
+        int m=grid[0].size();
+        if(x<0 || x>=n || y>=m ||y<0)
+            return;
+        
+        vis[x][y]=true;
+        
+        for(int i=-1;i<2;i++)
+            for(int j=-1;j<2;j++)
+            {
+                int x1=x+i;
+                int y1=y+j;
+                if(x1>=0 && y1>=0 && x1<n && y1<m && !vis[x1][y1] && grid[x1][y1]=='1')
+                    dfs(grid,x1,y1,vis);
+            }
+    }
+    
+  int numIslands(vector<vector<char>>& grid) 
+  {
+        int n=grid.size();
+        int m=grid[0].size();
+        
+        vector<vector<bool>>vis(n,vector<bool>(m,0));
+        int res=0;
+        for(int i=0;i<n;i++)
+            for(int j=0;j<m;j++)
+            {
+                if(!vis[i][j] && grid[i][j]=='1')
+                {
+                    res++;
+                    dfs(grid,i,j,vis);
+                }       
+            }
+        
+	return res;
+    }
+
+
+--> Flood fill Algorithm:
+    void dfs(vector<vector<int>>& image, int x, int y, int nc,vector<vector<bool>>&vis,int oc)
+    {
+        if(x<0 || y<0 || x>=image.size() || y>=image[0].size())
+            return;
+        if(image[x][y]!=oc || vis[x][y])
+            return;
+        
+        image[x][y]=nc;
+        vis[x][y]=true;
+        
+        dfs(image,x+1,y,nc,vis,oc);
+        dfs(image,x-1,y,nc,vis,oc);
+        dfs(image,x,y+1,nc,vis,oc);
+        dfs(image,x,y-1,nc,vis,oc);
+    }
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int nc) 
+    {
+        int n=image.size();
+        int m=image[0].size();
+        
+        vector<vector<bool>>vis(n,vector<bool>(m+1));
+        int oc=image[sr][sc];
+        dfs(image,sr,sc,nc,vis,oc);
+        return image;
+    }

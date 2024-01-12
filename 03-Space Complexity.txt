@@ -1,0 +1,45 @@
+**SPACE COMPLEXITY
+It is the order of growth of memory (or RAM space) in terms of the input size.
+The notations are same as that of time complexity.
+
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+    int a;
+    cin>>a;
+    int k=a*(a+1)/2;
+    cout<<k<<endl;
+    return 0;
+} //Space complexity is O(1).
+
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+    int a;
+    cin>>a;
+    int sum=0;
+    for(int i=1;i<=a;i++)
+        sum=sum+i;
+    cout<<sum<<endl;
+    return 0;
+}//Here also space compexity is O(1).
+
+*Auxiliary Space: Order of growth of temporary space in terms of input size.
+int arrSum (int arr[],int n);
+{
+    int sum=0;
+    for(int i=0;i<a;i++)
+        sum=sum+arr[i];   
+    return sum;
+}//Space complexity is O(n).
+But Auxiliary space complexity O(1).
+While using arrays or lists the minimum space complexity required is O(n).    
+
+--> Some important Properties of Asymptotic Notations:
+-Transitivity: f(n) = Θ(g(n)) and g(n) = Θ(h(n)) ⇒ f(n) = Θ(h(n)).
+-Reflexivity: f(n) = Θ(f(n))
+Both Transitivity and Reflexivity are valid for O and Ω as well.
+-Symmetry: f(n) = Θ(g(n)) if and only if g(n) = Θ(f(n))
+

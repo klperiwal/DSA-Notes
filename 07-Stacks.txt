@@ -1,0 +1,334 @@
+    STACKS
+
+A stack is an ordered list in which insertion and deletion are done at one end, called top. The last
+element inserted is the first one to be deleted. Hence, it is called the Last in First out(LIFO) or 
+First in Last out (FILO) list. 
+
+When an element is inserted in a stack, the concept is called push, and when an element is removed from the 
+stack, the concept is called pop. Trying to pop out an empty stack is called underflow and trying to push an
+element in a full stack is called overflow. 
+
+-- Main stack operations
+• Push (int data): Inserts data onto stack.
+• int Pop(): Removes and returns the last inserted element from the stack.
+
+-- Auxiliary stack operations
+• int Top(): Returns the last inserted element without removing it.
+• int Size(): Returns the number of elements stored in the stack.
+• int IsEmptyStack(): Indicates whether any elements are stored in the stack or not.
+• int IsFullStack(): Indicates whether the stack is full or not.
+
+If the stack is full, a push operation will then throw a full stack exception. Similarly, if we try deleting an
+element from an empty stack it will throw stack empty exception.
+
+Push, pop and size have time complexity O(1).
+Space complexity of stacks: O(n).
+
+-->Limitations of Stack: 
+The maximum size of the stack must first be defined and it cannot be changed. Trying to push a
+new element into a full stack causes an implementation-specific exception.
+
+#include<bits/stdc++.h>
+using namespace std;
+struct Mystack{
+    int *arr;
+    int cap;
+    int top;
+
+    Mystack(int c)
+    {
+        cap=c;
+        arr=new int[cap];
+        top=-1;
+    }
+    void push(int x)
+    {
+        top++;
+        arr[top]=x;
+    }
+    int pop()
+    {
+        int res=arr[top];
+        top--;
+        return res;
+    }
+    int peek()
+    {
+        return arr[top];
+    }
+    int size()
+    {
+        return top+1;
+    }
+    bool isEmpty()
+    {
+        return(top==-1);
+    }
+};
+int main()
+{
+    Mystack s(10);
+    s.push(10);
+    s.push(20);
+    s.push(30);
+    s.push(40);
+
+    cout<<s.size()<<endl;
+    cout<<s.peek()<<endl;
+    cout<<s.pop()<<endl;;
+    cout<<s.size()<<endl;
+    cout<<s.isEmpty()<<endl;
+    return 0;
+}
+The problem with the above array is here size is fixed.
+To solve this problem we can use vectors.
+
+struct Mystack{
+    vector<int>v;
+    void push(int x)
+    {
+        v.push_back(x);
+    }
+    int pop()
+    {
+        int res=v.back();
+        v.pop_back();
+        return res;
+    }
+    int peek()
+    {
+        return v.back();
+    }
+    int size()
+    {
+        return v.size();
+    }
+    bool isEmpty()
+    {
+        return v.empty();
+    }
+};
+
+-->Stack in C++ STL:-
+#include<bits/stdc++.h>
+using namespace std;
+int main()
+{
+    stack<int> s;
+    s.push(10);
+    s.push(20);
+    s.push(30);
+    s.push(40);
+
+    cout<<s.size()<<endl;
+    cout<<s.top()<<endl;
+    s.pop();
+    cout<<s.size()<<endl;
+    cout<<s.top()<<endl;
+    cout<<s.empty()<<endl;    
+    return 0;
+}
+Note:  s.push() is also written as s.emplace()
+
+stack<int>s;
+s.push(10);
+s.push(20);
+s.push(30);
+s.push(40);
+while(s.empty()!=true)
+{
+	cout<<s.top()<<" ";
+	s.pop();
+}
+Output: 40 30 20 10
+
+-->Check for  Balanced Parenthesis in Strings:
+bool isbalanced(string s)
+{
+    stack<char>st;
+    for(int i=0;i<s.length();i++)
+    {
+        if(s[i]=='(' || s[i]=='[' || s[i]=='{')
+            st.push(s[i]);
+        else
+        {
+            if(st.empty()==true)
+                return false;
+            else if(st.top()='(' && s[i]==')')
+                st.pop();
+            else if(st.top()='{' && s[i]=='}')
+                st.pop();
+            else if(st.top()='[' && s[i]==']')
+                st.pop();
+            else    
+                return false;
+        }
+    }
+    if(st.empty())   return true;
+    return false;
+}
+
+-->Implement two stack in an array:
+One naive way is to divide the array into two halves and then implementing two stacks.
+But the problem is that one stack may contain (n/2+3) element and other (n/2-3).. there the first
+stack will overflow and will not provide the right answer.
+
+Space efficient soln=
+Implement two stacks from both the ends.
+struct TwoStack
+{
+    int *arr;
+    int cap,top1,top2;
+    TwoStack(int x)   
+    {
+        cap=x;
+        top1=-1;
+        top2=cap;
+        arr=new int[x];
+    }
+
+    void push1(int x)
+    {
+        if(top1<top2-1)
+        {
+            top1++;
+            arr[top1]=x;
+        }
+    }
+    void push2(int x)
+    {
+        if(top1<top2-1)
+        {
+            top2--;
+            arr[top2]=x;
+        }
+    }
+    int pop1()
+    {
+        if(top1>=0)
+        {
+            int x=arr[top1];
+            top1--;
+            return x;
+        }
+        else    return -1;
+    }
+
+    int pop2()
+    {
+        if(top2<cap)
+        {
+            int x=arr[top2];
+            top2++;
+            return x;
+        }
+        else    return -1;
+    }
+};
+
+
+* Stock Span Problem:
+Span: No of days (including the current) on the left which have value less than equal to the current value. 
+Span of 1st element will always be 1.
+Efficient Soln:
+If a greater element is present on the left side:
+	(Index of current element) - (Index of closet greater element on left side)
+Else:
+	Index of current element +1.
+
+void stockspan(int arr[],int n)
+{
+    stack<int>s;
+    s.push(0);
+    cout<<1<<" ";
+
+    for(int i=1;i<n;i++)
+    {
+        while(!s.empty() && arr[s.top()]<=arr[i])
+            s.pop();
+
+        if(s.empty()==true)
+            cout<<i+1<<" ";
+        else    
+            cout<<i-s.top()<<" ";
+
+        s.push(i);
+    }
+    return;
+}
+   TC: O(n)    	 
+   SC= O(n)
+
+-->Find previous greater element:
+void prevgreater(int arr[],int n)
+{
+    stack<int>s;
+    cout<<-1<<" ";
+    s.push(0);
+    for(int i=1;i<n;i++)
+    {
+        while(!s.empty() && arr[i]>=arr[s.top()])
+            s.pop();
+        
+        if(s.empty())
+            cout<<-1<<" ";    
+        else   
+            cout<<arr[s.top()]<<" ";
+    
+        s.push(i);
+    }
+}
+
+-->Find next greater element:
+void nge(int a,int arr[])
+{
+    stack<int>s;
+    int arr1[a]; //To store the values of nge
+    s.push(arr[a-1]);
+    arr1[a-1]=-1;
+
+    for(int i=a-2;i>=0;i--)
+    {
+        while(!s.empty() && arr[i]>=s.top())
+            s.pop();
+
+        if(s.empty())
+            arr1[i]=-1;
+        else    
+            arr1[i]=s.top();
+    
+        s.push(arr[i]);
+    }
+    
+    for(int i=0;i<a;i++)
+        cout<<arr1[i]<<" ";  
+}
+
+-->Largest Rectangular Area in Histogram:
+   Algorithm-
+- Initialise: res=0, max=0;
+- Find previous smaller index for each element
+	If there is no prev smaller element take the index -1.
+- Find next smaller index for each element
+	If there is no next smaller element taker index n.(n - array size)
+- Now for every element
+   {
+	curr=(ns[i]-ps[i]-1)* arr[i];
+	res=  max(curr,max);	
+   }
+- Return res
+
+-->Largest rectangles with all 1s:
+int maxlen(int mat[r][c])
+{   
+    int res=maxHist(mat[0],c);
+    for(int i=1;i<r;i++)
+    {
+        for(int j=0;j<c;j++)
+            if(mat[i][j]==1)
+                mat[i][j]+=mat[i-1][j];
+
+        res=max(res,maxHist(mat[i],C));
+    }
+       return res;
+}

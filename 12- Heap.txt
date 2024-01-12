@@ -1,0 +1,141 @@
+	HEAP
+
+A heap is a tree with some special properties. The basic requirement of a heap is that the value of
+a node must be ≥ (or ≤) than the values of its children. This is called heap property. A heap also
+has the additional property that all leaves should be at h or h – 1 levels (where h is the height of
+the tree) for some h > 0 (complete binary trees).
+
+-- Types of Heap :-
+- Min Heap - The value of a node must be less than or equal to the values of its children.
+			ie. Highest priority item is assigned the lowest value.
+			ie. Minimum value need to be at the top.
+- Max Heap - The value of a node must be greater than or equal to the values of its children.
+			ie. Highest priority item is assigned the hoghest value.
+			ie. Maximum value need to be at the top.
+
+A binary heap is a complete Binary Tree. The Binary heap data structure are stored as an array.
+
+Assuming the root node has the value 0 and the value goes on increasing first for the left node and then
+for the right node.
+left(i)       = 2i+1
+right(i)    = 2i+2
+parent(i) = [(i-1)/2]
+
+-- Implementation of Binary Heap:
+class MinHeap
+{
+    int []arr;
+    int size;
+    int capacity;
+    MinHeap(int x)
+    {
+        arr=new int[c];
+        size=0;
+        capacity=c;
+    }
+    int left(int i){return 2*i+1;}
+    int right(int i){return 2*i+2;}
+    int parent(int i){return (i-1)/2;}
+};
+
+-- Binary Heap Insert:
+void insert(int x)
+{
+    if(size==capacity)
+        return;
+    size++;
+    arr[size-1]=x;
+    for(int i=size-1;i!=0 && arr[parent[i]]>arr[i])
+    {
+        swap(arr[i],arr[parent[i]]);
+        i=parent[i];
+    }
+}    
+
+-- Heapifying:
+After inserting an element into heap, it may not satisfy the heap property. In that case we need to
+adjust the locations of the heap to make it heap again. This process is called heapifying.
+
+void minHeapify(int i)
+{
+    int lt=left(i);
+    int rt=right(i);
+    int smallest=i;
+    if(lt<size && arr[lt]<arr[i])
+        smallest=lt;
+    if(rt<size && arr[rt]<smallest)
+        smallest=rt;
+
+    if(smallest!=i)
+    {
+        swap(arr[i],arr[smallest]);
+        minHeapify(smallest);
+    }
+}
+TC: O(log n)
+SC: O(log n) - for recursive calls
+              O(1) - for iterative calls
+
+-- Extract Min:
+The minimum element is always the root node.
+So, here we can swap the root node with the last node and then call the heapify function.
+int ExtractMin()
+{
+    if(size==0)
+        return INT_MAX;
+    else if(size==1)
+    {
+        size--;
+        return arr[0];
+    }
+
+    swap(arr[0],arr[size-1]);
+    size--;
+    minHeapify(0);
+    return arr[size];
+}
+
+ * Priority Queue:-
+Priority Queue is an abstract data type that is similar to a queue, and every element has some priority
+value associated with it. The priority of the elements in a priority queue determines the order in which
+elements are served.
+In C++, by default Priority Queues are stored as Max Heap.
+
+- Applications-
+• Data compression: Huffman Coding algorithm
+• Shortest path algorithms: Dijkstra’s algorithm
+• Minimum spanning tree algorithms: Prim’s algorithm
+• Event-driven simulation: customers in a line
+• Selection problem: Finding kth smallest element
+
+-- Priority Queue in C++:
+int main()
+{
+    priority_queue<int>pq;
+    pq.push(10);
+    pq.push(20);
+    pq.push(30);
+    pq.push(15);
+    pq.push(25);
+
+    cout<<pq.size()<<endl;  // 5
+    while(!pq.empty())
+    {
+        cout<<pq.top()<<" ";
+        pq.pop();
+    }  // 10 15 20 25 30
+    return 0;
+}
+If we want min Heap for the priority queue, 
+Syntax: priority_queue<int,vector<int>,greater<int>>pq;
+
+Priority Queue can also be implemented from the vectors or arrays.
+int arr[]={1,2,3,5,6,7,4,8,9};
+priority_queue<int>pq(arr,arr+9);
+
+- Time Complexities of various PQ functions:
+Push- O(log n)
+Pop - O(log n)
+empty - O(1)
+size - O(1)
+top- O(1)

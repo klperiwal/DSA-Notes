@@ -1,0 +1,219 @@
+ 	DEQUE
+They are similar to vectors, but are more efficient in case of insertion and deletion of elements.
+Double-ended queues are a special case of queues where insertion and deletion operations
+are possible at both the ends.
+
+The time complexities for doing various operations on deques are-
+- Accessing Elements- O(1)
+- Insertion or removal of elements- O(N)
+- Insertion or removal of elements at start or end- O(1)
+
+-->Structure of a Deque:-
+struct Deque{
+    int size,cap;
+    int *arr;
+    Deque(int c)
+    {
+        cap=c;
+        size=0;
+        arr=new int[cap];
+    }
+
+    bool isFull()
+    {
+        if(size==cap)
+            return true;
+        return false; 
+    }
+
+    bool isEmpty()
+    {
+        if(size==0)
+            return true;
+        return false; 
+    }
+
+    int getrear()
+    {
+        if(isEmpty())
+            return -1;
+        return arr[size-1];
+    }
+
+    int getfront()
+    {
+        if(isEmpty)
+            return -1;
+        return arr[0];
+    }
+    
+    void insertFront(int x)
+    {
+        if(isFull)
+            return;
+
+        for(int i=0;i<size;i++)
+            arr[i+1]=arr[i];
+
+        arr[0]=x;
+        size++;
+    }
+    
+    void insertEnd(int x)
+    {
+        if(isFull)
+            return;
+
+        arr[size]=x;
+        size++;
+    }
+
+    void deletefront()
+    {
+        for(int i=1;i<size;i++)
+            arr[i-1]=arr[i];
+        size--;
+    }
+
+    void deleteend()
+    {
+        size--;
+    }
+};
+
+clear() - Removes all the elements of deque container.
+		This function makes the size of the deque 0.
+erase() - Removes the elements from the specified position or range.
+swap() - Swap the contents of one deque with another deque of same type & size.
+assign() - Assign values to the same or different deque container.
+
+
+--> Deque in C++ STL:
+Runs under header file: #include<deque>
+#include<bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+    deque<int>dq={10,20,30,40};
+    dq.push_front(5);   
+    dq.push_front(6);
+    dq.push_back(50);
+    
+    for(int i=0;i<dq.size();i++)
+        cout<<dq[i]<<" ";
+    cout<<endl;
+    cout<<dq.size()<<endl;
+    dq.pop_front();
+    
+    auto itr=dq.begin();
+    dq.insert(itr,1);
+    for(int i=0;i<dq.size();i++)
+        cout<<dq[i]<<" ";
+
+    cout<<endl<<dq.front()<<" "<<dq.back()<<endl;
+    return 0;
+}
+Note: dq.back() points to the last element.
+	  dq.end() points to the element beyond the last element.
+
+In deque, push_front(), push_back(), pop_front(), pop_back() all 4 functions are
+performed in O(1) time. Insert and erase still takes O(n) time.
+
+--> Operations on min and max value only:
+struct Mydeque
+{
+    deque<int>dq;
+    void Insertmin(int x)
+    {
+        dq.push_front(x);
+    }
+    
+    void Insertmax(int x)
+    {
+        dq.push_back(x);
+    }
+
+    int getmin()
+    {
+        if(dq.empty()) 
+            return -1;
+        return dq.front();
+    }
+
+    int getmax()
+    {
+        if(dq.empty()) 
+            return -1;
+        return dq.back();
+    }
+
+    void deletemin()
+    {
+        dq.pop_front();
+    }
+    void deletemaxx()
+    {
+        dq.pop_back();
+    }
+};
+
+
+-->Maximum in all subarrays of size k:
+    vector <int> maxinsubarray(int *arr, int n, int k)
+    {
+        deque<int>q;
+        vector<int>v;
+        for(int i=0;i<k;i++)
+        {
+            while(!q.empty() && arr[i]>arr[q.back()])
+                q.pop_back();
+                
+            q.push_back(i);
+        }
+        v.push_back(arr[q.front()]);
+        
+        for(int i=k;i<n;i++)
+        {
+            if(q.front()==i-k)
+                q.pop_front();
+         
+            while(!q.empty() && arr[q.back()]<arr[i])
+                q.pop_back();
+                
+            q.push_back(i);
+            v.push_back(arr[q.front()]);
+        }
+        return v;
+    }
+
+
+--> First negative element in window of size k:
+vector<int>fne(int n,int arr[],int k)
+{
+    deque<int>dq;
+    vector<int>v;
+    for(int i=0;i<k;i++)
+    {
+        if(arr[i]<0)
+            dq.push_back(i);
+    }
+    if(dq.empty())
+        v.push_back(0);
+    else    
+        v.push_back(arr[dq.front()]);
+    
+    for(int i=k;i<n;i++)
+    {
+        if(dq.front()==i-k)
+            dq.pop_front();
+        if(arr[i]<0)
+            dq.push_back(i);
+
+        if(dq.empty())
+            v.push_back(0);
+        else    
+            v.push_back(arr[dq.front()]);
+    }
+    return v;
+}

@@ -1,0 +1,217 @@
+LINKED LISTS
+A linked list is a data structure used for storing collections of data.
+• Successive elements are connected by pointers
+• The last element points to NULL
+• Can grow or shrink in size during execution of a program
+• Can be made just as long as required (until systems memory exhausts).
+
+-->Main Linked List Operations:
+-Insert: Inserts an element into the list.
+-Delete: Removes and returns the specified position of the lists.
+              : Can also remove all the elements from the list.
+-Count: Returns the number of elements in the lists.
+
+
+* Difference between array and Lists:
+  Advantages of arrays:
+- They are simple and easy to use.
+- In constant time you can access the elements.
+  
+  Disadvantages of array:
+- It preallocates the memory and wastes memory space for indices in the array that are empty.
+- Fixed size: The size of the array is static
+- Sometimes it may not be possible to get the memory for the complete array(big arrays)
+- The shifting operations on array is expensive.
+
+  Advantages of linked lists:
+- Linked Lists can be expanded in Constant time.
+     In linked list, we can start with space for just one allocated element and add on new 
+     elements easily without the need to do any copying and reallocating.
+
+ Disadvantages of linked lists:
+ - The main disadvantage of linked lists is access time to individual elements. Array is random-access,
+   which means it takes O(1) to access any element in the array.
+- Linked lists take O(n) for access to an element in the list in the worst case.
+- Linked lists waste memory in terms of extra reference points.
+- If you delete last but 1 element from the list.. u should write a code to hold Null reference.
+
+-->Type Declaration for LinkedList Structures:
+struct Node{
+    int data;  
+    struct Node *next;  //Self Referential Structure.
+};
+
+#include<bits/stdc++.h>
+using namespace std;
+struct Node
+{
+    int data;  //This can be char,float or double also
+    Node *next; 
+    Node(int x){
+        data=x;
+        next=NULL;
+    }
+};
+
+void printList(Node *head)
+{   
+    Node *a=head;
+    while(a!=NULL)
+    {
+        cout<<a->data<<" ";
+        a=a->next;
+    }
+}
+int main()
+{
+    Node *head= new Node(10);
+    head ->next =new Node(20);
+    head ->next ->next =new Node(30);
+    head ->next->next ->next =new Node(40);
+    printList(head);
+    return 0;
+}
+
+-->Inserting a number at Start:
+The time complexity of insertion function is O(1).
+#include<bits/stdc++.h>
+using namespace std;
+struct Node
+{
+	int data;
+	Node *next;
+	Node(int x)
+	{
+		data=x;
+		next=NULL;
+	}
+};
+Node *insertBegin(Node *head,int x)
+{
+	Node *temp=new Node(x);
+	temp->next=head;
+	return temp;
+}
+
+int main()
+{
+	Node *head=NULL;
+	head =insertBegin(head,10);
+	head =insertBegin(head,20);
+	head =insertBegin(head,30);
+	head =insertBegin(head,40);
+
+	Node *a=head;
+	while(a!=NULL)
+	{
+		cout<<a->data<<" ";
+		a=a->next;
+	}
+	return 0;
+}//Output: 40 30 20 10
+
+
+-->Insert the Elements at the End:
+This will take O(n) time always.
+
+Node *insertEnd(Node *head,int x)
+{
+	Node *temp=new Node(x);
+	if(head==NULL)
+		return temp;
+	
+	Node *a=head;
+	while(a->next!=NULL)
+		a=a->next;
+	a->next=temp;
+	return head;
+}
+int main()
+{
+	Node *head=NULL;
+	head =insertEnd(head,10);
+	head =insertEnd(head,20);
+	head =insertEnd(head,30);
+	head =insertEnd(head,40);
+
+	Node *a=head;
+	while(a!=NULL)
+	{
+		cout<<a->data<<" ";
+		a=a->next;
+	}
+	return 0;
+}
+
+-->Delete First Node in Singly Linked List:
+Node *DelHead(Node *head)
+{
+	if(head==NULL)
+		return NULL;
+	Node *a=head;
+	else
+	{
+		a=a->next;
+		delete head;
+	}
+	return a;
+}
+
+-->Delete Last Node in a Singly Linked List:
+//Time Complexity is O(n)
+Node *DelTail(Node *head)
+{
+	if(head==NULL)
+		return NULL;
+	else if(head->next==NULL)
+	{
+		delete head;
+		return NULL;
+	}
+	
+	Node *a=head;
+	while(a->next->next!=NULL)
+		a=a->next;
+	a->next=NULL;
+	return head;
+}
+
+-->Merge 2 sorted LL:-
+void mergell(Node *a, Node *b)
+{
+    Node *head=NULL;
+    Node *tail=NULL;
+
+    if(a==NULL)  return b;
+    if(b==NULL)  return a;
+
+    if(a->data<=b->data)
+    {
+        head=tail=a;
+        a=a->next;
+    }
+    else
+    {
+        head=tail=b;
+        b=b->next;
+    }
+    while(a!=NULL && b!=NULL)
+    {
+        if(a->data<b->data)
+        {
+            tail->next=a;
+            tail=a; a=a->next;
+        }
+        else
+        {
+            tail->next=b;
+            tail=b; b=b->next;
+        }
+    }
+    if(a==NULL)
+        tail->next=b;
+    else    
+        tail->next=a;
+        
+    return head;
+}

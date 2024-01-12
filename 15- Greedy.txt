@@ -1,0 +1,158 @@
+ 	:: GREEDY ALGORTIHMS::
+
+Greedy algorithms work in stages. In each stage, a decision is made that is good at that point,
+without bothering about the future. This means that some local best is chosen.
+Greedy Method doesnot provide us with the correct answer always.
+
+Greedy is an algorithmic paradigm that builds up a solution piece by piece, always choosing the next piece that offers the most obvious and immediate benefit. Greedy algorithms are used for optimization problems.
+
+- Application of Greedy Programming-
+• Huffman coding compression algorithm
+• Prim’s and Kruskal’s algorithms
+• Shortest path in Weighted Graph [Dijikstra’s]
+• Coin change problem
+• Fractional Knapsack problem
+
+
+--> Activity Selection Problem:
+
+static bool mycomp(pair<int,int>a,pair<int,int>b)
+    {
+        // if(a.second==b.second)
+        //     return a.first<b.first;
+        return a.second<b.second;
+    }
+    
+    int activitySelection(vector<int> start, vector<int> end, int n)
+    {
+        vector<pair<int,int>>v;
+        for(int i=0;i<n;i++)
+            v.push_back(make_pair(start[i],end[i]));
+        
+        sort(v.begin(),v.end(),mycomp);
+        
+        int k=v[0].second;
+        int sum=1;
+        for(int i=1;i<n;i++)
+            if(k<v[i].first)
+            {
+                sum++;
+                k=v[i].second;
+            }
+
+        return sum;
+    }
+
+
+-->Maximum Number of meetings in one room:
+int maxMeetings(int start[], int end[], int n)
+{
+    vector<pair<int,int>>v;
+    for(int i=0;i<n;i++)
+        v.push_back(make_pair(end[i],start[i]));
+        
+    sort(v.begin(),v.end()); 
+    int sum=1;
+    int k=v[0].first;
+
+    for(int i=1;i<n;i++)
+        if(k<v[i].second)
+        {
+            sum++;
+            k=v[i].first;
+        }
+
+    return sum;
+}
+
+
+-->Minimum Number of Platforms:-
+Note: At the same time, trains cannot enter and leave the same platform.
+int minPlatform(int arr[], int dep[], int n)
+{
+    sort(arr,arr+n);
+    sort(dep,dep+n);
+
+    int i=1,j=0;
+    int res=1,sum=1;
+    while(i<n)
+    {
+        if(arr[i]<=dep[j])
+        {
+            sum++;
+            res=max(sum,res);
+            i++;
+        }
+        else
+        {
+            sum--;
+            j++;
+        }
+    }
+    return res;
+}
+
+-->Job Sequencing:
+Greedily choose the jobs with maximum profit first, by sorting the jobs in decreasing order of their profit. 
+
+struct Job 
+{ 
+    int id;	 
+    int dead; 
+    int profit; 
+};
+static bool mycomp(Job a, Job b)
+{
+    return a.profit>b.profit;
+}
+vector<int> JobScheduling(Job arr[], int n) 
+{ 
+    sort(arr,arr+n,mycomp);
+    vector<bool>v(n);
+    vector<int>res;
+    int sum=0,count=0;
+    
+    for(int i=0;i<n;i++)
+        for(int j=arr[i].dead;j>0;j--)
+        {
+            if(!v[j])
+            {
+                res.push_back(arr[i].id);
+                count++;
+                v[j]=true;
+                break;
+            }
+        }
+        
+    return res;
+} 
+
+	
+-->Fractional Knapsack:
+double fracknapsack(int weight[],int value[],int n,int lim)
+{
+    vector<pair<double,int>>v;
+    for(int i=0;i<n;i++)
+    {
+        double k=(double)value[i]/weight[i];
+        v.push_back({k,i});
+    }
+    sort(v.begin(),v.end());
+
+    double res=0;    
+    for(int i=n-1;i>=0;i--)
+    {
+        if(weight[v[i].second]<=lim)
+        {
+            res=res+value[v[i].second];
+            lim=lim-weight[v[i].second];
+        }
+        else
+        {
+            res=res+lim*v[i].first;
+            break;
+        }
+    }
+    return res; 
+}
+

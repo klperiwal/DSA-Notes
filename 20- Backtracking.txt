@@ -1,0 +1,7 @@
+	:: Backtracking ::
+
+Backtracking is a form of recursion.
+Backtracking is a sort of refined brute force. At each node, we eliminate choices that are obviously
+not possible and proceed to recursively check only those that have potential.
+
+

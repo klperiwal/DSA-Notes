@@ -1,0 +1,290 @@
+	  ::DYNAMIC PROGRAMMING::
+
+Dynamic Programming = Recursion + Memoization
+The major components of DP are:
+• Recursion: Solves sub problems recursively.
+• Memoization: Stores already computed values in table.
+Basically in DP, we store the already claculated value so that its not repeated twice.
+
+* Approach to solve Dynamic Programming:
+There are two approaches for solving DP problems:
+ • Bottom-up dynamic programming (Tabulation)
+	We evaluate the function starting with the smallest possible input argument value
+	and then we step through possible values, slowly increasing the input argument value. 
+ • Top-down dynamic programming (Memoization)
+	The problem is broken into sub problems; each of these sub problems is solved;
+	and the solutions remembered, in case they need to be solved.
+
+
+* Fibonacci Series(Using DP):
+vector<int>memo(n+1,-1);
+//Initialize a vector of n+1 size
+int fibo(int n)
+{
+	if(memo[n]==-1)
+	{
+		int res;
+		if(n==0 || n==1)
+			res=n;	
+		else
+			res=fibo(n-1)+fibo(n-2);
+		
+		memo[n]=res;
+	}
+	return memo[n];
+}
+
+* Frog Jump Problem:
+Frog can jump either 1 or 2 steps and energy wasted is the array value.
+Return the minimum energy in which frog can traverse through the array.
+
+int mincost(vector<int>&dp,int arr[],int n)
+{
+    if(n<0)
+        return 0;
+    if(dp[n]!=-1)
+        return dp[n];
+
+   int left=mincost(dp,arr,n-1)+arr[n];
+   int right=mincost(dp,arr,n-2)+arr[n];
+   return dp[n]=min(right,left);
+}
+int frogjump(int n, int arr[])
+{
+    vector<int>dp(n+1,-1);
+    return mincost(dp,arr,n-1);
+}
+
+-- Solving it using Tabulation:
+int frogjump(int n,int arr[])
+{	
+    vector<int>dp(n,0);
+    dp[0]=arr[0];	
+    dp[1]=arr[1];
+    
+    for(int i=2;i<n;i++)
+    {
+        int first=dp[i-1]+arr[i];
+        int second=dp[i-2]+arr[i];
+        dp[i]=min(first,second);
+    }
+    return dp[n-1];
+}
+
+* Same Previous Problem where frog can take atmax 'k' jumps:
+int mincost(vector<int>&v,int n,int arr[],int k)
+{
+    if(k==0)
+	return -1;
+    if(n<0)
+        return 0;
+    else if(n<k)
+        v[n]=arr[n];
+
+    if(v[n]!=-1)
+        return v[n];
+
+    int res=INT_MAX;
+    for(int i=1;i<=k;i++)
+    {
+        int x=arr[n]+mincost(v,n-i,arr,k);
+        res=min(res,x);
+    }
+    return v[n]=res;
+}
+
+
+* Maximum Sum of Non adjacent elements:
+int func(int n,int arr[],vector<int>&dp)
+{
+    if(n<0)
+        return 0;
+    if(dp[n]!=-1)
+        return dp[n];
+
+    int k1=arr[n]+func(n-2,arr,dp);
+    int k2=func(n-1,arr,dp);
+    return dp[n]=max(k1,k2);
+}
+
+int nae(int n,int arr[])
+{
+    vector<int>dp(n,-1);
+    return func(n-1,arr,dp);
+}
+
+-An intresting change - If the houses are connected in a circular fashion:
+Soln:-
+int k1 = Take DP from first house to (n-1)th house.
+int k2 = Take DP from second houst to nth house.
+Ans --> max(k1,k2) 
+
+int maxsum1(vector<int>&v1,int arr[],int n)
+{
+    if(n<=0)
+        return 0;
+    if(v1[n]!=-1)
+        return v1[n];
+
+    int k1=arr[n]+maxsum1(v1,arr,n-2);
+    int k2=arr[n]+maxsum1(v1,arr,n-1);
+    return v1[n]=max(k1,k2);
+}
+int maxsum2(vector<int>&v2,int arr[],int n)
+{
+    if(n<0)
+        return 0;
+    if(n==0 || n==1)
+        return arr[n];
+    if(v2[n]!=-1)
+        return v2[n];
+
+    int k1=arr[n]+maxsum2(v2,arr,n-2);
+    int k2=arr[n]+maxsum2(v2,arr,n-1);
+    return v2[n]=max(k1,k2);
+}
+
+int maxcircular(int arr[],int n)
+{
+    vector<int>v1(n+1,-1);
+    vector<int>v2(n+1,-1);
+
+    int k1=maxsum1(v1,arr,n-1);
+    int k2=maxsum2(v2,arr,n-1);
+    return max(k1,k2);
+}
+
+
+* Longest Common Subsequence(LCS):
+-- Using Memoization:
+int memo[m+1][n+1]={-1,-1,-1...,-1}
+int lcs(string s1, string s2, int m, int n)
+{
+	if(memo[m][n]!=-1)
+		return memo[m][n];
+	if(m==0 || n==0)
+		return 0;
+	
+	if(s1[m-1]==s2[m-2])
+		memo[m][n]=1+lcs(s1,s2,m-1,n-1);
+	else 
+		memo[m][n]=max(lcs(s1,s2,m-1,n),lcs(s1,s2,m,n-1));
+
+	return memo[m][n];
+}
+
+-- Using Tabulation
+int lcs(string s1,string s2)
+{
+    int m=s1.length();
+    int n=s2.length();
+    vector<vector<int>>dp(m+1,vector<int>(n+1,0));
+
+    for(int i=1;i<=m;i++)
+        for(int j=1;j<=n;j++)
+        {
+            if(s1[i-1]==s2[j-1])
+                dp[i][j]=1+dp[i-1][j-1];
+            else
+                dp[i][j]=max(dp[i-1][j],dp[i][j-1]);
+        }
+    return dp[m][n];
+}
+TC: O(m*n)
+SC: O(m*n)
+
+* Minimum insertion and deletion to convert one string to another:
+Let the two strings be s1 and s2.
+Let length of s1 and s2 be m and n respectively.
+Find the LCS of s1 and s2 -- Assume it to be k.
+Answer= m+n-2k
+Logic- (m-k) deletions and (n-k)additions.
+
+* Longest Palindromic subsequence:
+Let the string be s.
+string s1=s;
+string s2=reverse(s);
+Now find the LCS of s1 and s2.
+
+
+* Longest Repeating subsequence:
+(Slightly diff from LCS -- check if part)
+
+int memo[m+1][n+1]={-1,-1,-1...,-1}
+int lcs(string s1, string s2, int m, int n)
+{
+	if(memo[m][n]!=-1)
+		return memo[m][n];
+
+	if(m==0 || n==0)
+		memo[m][n]=0;
+	
+	if(s1[m-1]==s2[n-1] && m!=n)
+		memo[m][n]=1+lcs(s1,s2,m-1,n-1);
+	else 
+		memo[m][n]=max(lcs(s1,s2,m-1,n),lcs(s1,s2,m,n-1));
+
+	return memo[m][n];
+}
+
+* Shortest Common Supersequence:
+Length= (Sum of lengths of given two strings) - (Length of LCS of two given strings)
+
+
+* Maximise the Cut Sequence:
+Ropes can be cut either in x,y,z length.
+    int maximizeTheCuts(int n, int x, int y, int z)
+    {
+        vector<int>dp(n+1,-1);
+        dp[0]=0;
+        for(int i=1;i<=n;i++)
+        {
+            if(i-x>=0)
+                dp[i]=max(dp[i],dp[i-x]);
+            if(i-y>=0)
+                dp[i]=max(dp[i],dp[i-y]);
+            if(i-z>=0)
+                dp[i]=max(dp[i],dp[i-z]);
+                
+            if(dp[i]!=-1)
+                dp[i]++;
+        }
+        if(dp[n]==-1)
+		return 0;
+
+         return dp[n];
+    }
+
+* Minimum Number of Jumps to reach end:
+--Recursive Soln:
+int minJumps(int n,int arr[])
+{
+    if(n==1)
+        return 0;
+    int res=INT_MAX;
+    for(int i=0;i<n-1;i++)
+        if(i+arr[i]>=n-1)
+        {
+            int k=minJumps(i+1,arr);
+            if(k!=INT_MAX)
+                res=min(res,k+1);
+        }
+    return res;
+}
+
+-- DP Soln:
+int minJumps(int n,int arr[])
+{
+    vector<int>dp(n+1,INT_MAX);
+    dp[0]=0;
+
+    for(int i=1;i<n;i++)
+        for(int j=0;j<i;j++)
+            if(arr[j]+j>=i)
+            {
+                if(dp[j]!=INT_MAX)
+                    dp[i]=min(dp[i],dp[j]+1);
+            }
+        
+    return dp[n-1];
+}

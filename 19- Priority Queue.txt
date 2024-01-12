@@ -1,0 +1,90 @@
+	::PRIORITY QUEUE::
+
+A priority queue is a type of queue that arranges elements based on their priority
+values. Elements with higher priority values are typically retrieved before elements
+with lower priority values.
+Each element has a priority value associated with it. When you add an element to the
+queue, it is inserted in a position based on its priority value.
+
+-- Properties of Priority Queue:
+- Every item has a priority associated with it.
+- An element with high priority is dequeued before an element with low priority.
+- If two elements have the same priority, they are served according to the order in the queue.
+
+#include<bits/stdc++.h>
+using namespace std;
+int main()
+{
+    int a;
+    cin>>a;
+    priority_queue<int>pq;
+
+    for(int i=0;i<a;i++)
+    {
+        int x;
+        cin>>x;
+        pq.push(x);
+    }
+
+    cout<<pq.top()<<endl;  //Max valued element will be printed
+    cout<<pq.size()<<endl; // Size of pq
+    pq.pop(); 
+   // Max valued element gets popped and 2nd max takes its position
+    cout<<pq.top()<<endl;  
+    return 0;
+}
+
+By default priority queue is of max heap.
+To create priority queue of min heap,
+priority_queue <int, vector<int>, greater<int>>pq;
+
+
+- Priority Queues can also be created by using arrays or vectors:
+    int arr[6]={7,9,3,6,8,2};
+    priority_queue<int>pq(arr,arr+6);
+
+    vector<int>v;
+    for(int i=0;i<6;i++){
+        int x;
+        cin>>x;
+        v.push_back(x);
+    }
+    priority_queue<int>pq(v.begin(),v.end());
+
+* Sort using Priority Queue:
+void sortusingpq(int *arr,int n)
+{
+    priority_queue<int>pq(arr,arr+n);
+    for(int i=n-1;i>=0;i--)
+    {
+        arr[i]=pq.top();
+        pq.pop();
+    }
+}
+
+
+* K largest elements:
+- Build a min heap of first K items.
+- Traverse from (k+1)th element.
+	Compare the current element with top.
+	If element is greater than the top, remove the top element and
+	insert the current element in the Min Heap.
+- Print the contents of the Min Heap.
+
+void printklargest(int arr[],int n,int k)
+{
+    priority_queue<int,vector<int>,greater<int>>pq(arr,arr+k);
+    for(int i=k;i<n;i++)
+    {
+        if(arr[i]>pq.top())
+        {
+            pq.pop();
+            pq.push(arr[i]);
+        }
+    }
+    while(!pq.empty())
+    {
+        cout<<pq.top()<<" ";
+        pq.top();
+    }
+}

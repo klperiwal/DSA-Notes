@@ -1,0 +1,484 @@
+ 	 TREES
+A tree is a data structure similar to a linked list but instead of each node pointing simply to the
+next node in a linear fashion, each node points to a number of nodes.
+
+The root of a tree is the node with no parents.
+An edge refers to the link from parent to child.
+A node with no children is called leaf node. 
+(A tree will have 1 root node and atleast 1 leaf node )
+Number of children present in a node is called degree.
+The depth of a node is the length of the path from the root to the node.
+The height of a node is the length of the path from that node to the deepest node.
+
+--> Binary Trees:
+Binary tree is a special type of tree with atmax two childrens.
+Empty tree is also a valid binary tree.
+
+Strict Binary Tree: Here, each node has exactly two children or no children.
+Full Binary Tree: Each node has exactly two children and all leaf nodes are at the same level.
+Complete binary Tree: All leaf nodes are at height h or h – 1 and also without any
+				missing number in the sequence.
+
+* Stucture of a binary tree:-
+struct Node
+{
+    int key;
+    Node *left;
+    Node *right;
+    Node(int k){
+        key=k;
+        left=right=NULL;
+    }
+};
+
+ - Code
+#include<bits/stdc++.h>
+using namespace std;
+struct Node
+{
+    int key;
+    Node *left;
+    Node *right;
+    Node(int x)
+    {
+        key=x;
+        left=right=NULL;
+    }
+};
+
+int main()
+{
+    Node *root=new Node(10);
+    root->left=new Node(20);
+    root->right=new Node(30);
+    root->left->left=new Node(40);
+    root->left->right=new Node(50);
+    root->right->right=new Node(70);
+    root->right->left=new Node(60);
+
+    return 0;
+}
+
+-- Properties of Binary Tree:
+• The number of nodes n in a full binary tree is 2^(h+1) – 1. Since, there are h 
+   levels we need to add all nodes at each level.
+• The number of nodes n in a complete binary tree lies between 2^h(minimum) 
+   and 2^(h+1)-1(maximum).
+• The number of leaf nodes in a full binary tree is 2^h.
+• The number of NULL links in a complete binary tree of n nodes is n+1.
+
+--> Tree Traversal:
+Traversing through every node of the tree exactly once.
+Using Depth first traversal, we can easily traverse through the trees.
+Here, we traverse one side of the tree first and then move to the other side.
+This can be simply understood by recursion.
+
+Depth First Traversal= 
+  - Inorder (Left Root Right)
+  - Preorder (Root Left Right)
+  - Postorder (Left Right Root)
+
+		10
+	      /    \
+           20      30
+	 /    \         \
+     40     50       60
+  	       /   \
+	   70       80
+
+In the above binary tree:
+Inorder : 40 20 70 50 80 10 30 60
+Preorder: 10 20 40 50 70 80 30 60
+Postorder: 40 70 80 50 20 60 30 10
+
+-- To print the node in inorder traversal:
+void inorder(Node *root)
+{
+    if(root!=NULL)
+    {
+        inorder(root->left);
+        cout<<root->key<<" ";	
+        inorder(root->right);
+    }
+}
+TC: O(n)
+SC: O(height)
+
+-- To print the node in preorder traversal:
+void preorder(Node *root)
+{
+    if(root!=NULL)
+    {
+        cout<<root->key<<" ";
+        preorder(root->left);
+        preorder(root->right);
+    }
+}
+
+-- To print the node in postorder traversal:
+void postorder(Node *root)
+{
+    if(root!=NULL)
+    {
+        postorder(root->left);
+        postorder(root->right);
+        cout<<root->key<<" ";
+    }
+}
+
+* Height of a Binary Tree:
+Maximum distance from the root to leaf in a Tree.
+int height(Node *root)
+{
+    if(root==NULL)
+        return 0;
+
+    return 1+ max(height(root->left),height(root->right));
+}
+TC: O(n)
+SC: O(height)
+
+ * Print Nodes at a distance K from the root:
+void kdistance(Node *root,k)
+{
+    if(root==NULL)
+        return;
+    if(k==0)
+        cout<<root->key<<" ";
+    else
+    {
+        kdistance(root->left,k-1);
+        kdistance(root->right,k-1);
+    }
+}
+TC: O(n)
+SC: O(height)
+
+ * Level Order Traversal:
+Also called Breadth first Traversal.
+Naive way: We can get the height of the tree.
+ 		Then from root node traverse all the distance and print the elements.
+		TC : O(h*n)
+Efficient Soln:
+		Can be preformed by Queue data structure.
+
+void printlevel(Node *root)
+{
+    if(root==NULL)
+        return;
+    queue<Node*>q;
+    q.push(root);
+    while(!q.empty())
+    {
+        Node *curr=q.front();
+        q.pop();
+        cout<<curr->key<<" ";
+        if(curr->left!=NULL)
+            q.push(curr->left);
+        if(curr->right!=NULL)
+            q.push(curr->right);
+    }
+}
+TC: O(n)
+SC: O(n)
+
+
+* Level Order Traversal line by line:
+void printlevel(Node *root)
+{
+    if(root==NULL)
+        return;
+    queue<Node*>q;
+    q.push(root);
+    q.push(NULL);
+    while(q.size()>1)
+    {
+        Node *curr=q.front();
+        q.pop();
+        if(curr==NULL)
+        {
+            cout<<endl;
+            q.push(NULL);
+            continue;
+        }
+        cout<<curr->key<<" ";
+        if(curr->left!=NULL)
+            q.push(curr->left);
+        if(curr->right!=NULL)
+            q.push(curr->right);
+    }
+}
+TC: O(n)
+SC: O(n)
+
+void printlevel(Node *root)
+{
+    if(root==NULL)
+        return;
+    queue<Node*>q;
+    q.push(root);
+    while(!q.empty())
+    {
+        int k=q.size();
+        for(int i=0;i<k;i++)
+        {
+            Node *curr=q.front();
+            q.pop();
+            cout<<curr->key<<" ";
+            if(curr->left!=NULL)
+                q.push(curr->left);
+            if(curr->right!=NULL)
+                q.push(curr->right);
+        }
+        cout<<endl;
+    }
+}
+
+* Size of a binary tree:
+int sizeofbt(Node *root)
+{
+    if(root==NULL)
+        return 0;
+    return 1+sizeofbt(root->left)
+		+sizeofbt(root->right);
+}
+TC: O(n)
+SC: O(height)
+
+
+*Maximum value in a binary tree:
+int maxi=INT_MIN;
+int findmax(Node *root)
+{
+    if(root!=NULL)
+    {
+        int k=root->data;
+        if(k>maxi)
+            maxi=k;
+        int ans=max(findmax(root->left),findmax(root->right));
+        if(ans>maxi) 
+            maxi=ans;
+    }
+    return maxi;
+}
+
+
+* Finding a value in BT: 
+Intialize bool b=0;
+
+bool findinbt(Node *root,int key, bool &b)
+{
+    if(root!=NULL)
+    {
+        if(root->data==key)
+        {
+            b=1;
+            return b;
+        }
+        else
+        {
+            findinbt(root->right,key,b);
+            findinbt(root->left,key,b);
+        }
+    }
+    return b;
+}
+
+
+* Print Left View of Binary Tree:
+-- Recursive:
+int maxval=0;
+void printleft(Node* root,int val)
+{
+    if(root==NULL)
+        return;
+
+    if(maxval<val){
+        cout<<root->key<<" ";
+        maxval=val;
+    }
+    printleft(root->left,val+1);
+    printleft(root->right,val+1);
+}
+void printleftview(Node* root)
+{   printleft(root,1);  }
+
+-- Iterative:
+void printleft(Node* root, vector<int>&v)
+{
+    if(root==NULL)
+        return;
+
+    queue<Node*>q;
+    q.push(root);
+    while(!q.empty())
+    {
+        int k=q.size();
+        for(int i=0;i<k;i++)
+        {
+            Node *temp=q.front();
+            q.pop();
+            if(i==0)
+                v.push_back(temp->key);
+            if(temp->left!=NULL)
+                q.push(temp->left);
+            if(temp->right!=NULL)
+                q.push(temp->right);
+        }
+    }
+    return v;
+}
+
+
+* Children Sum Property:
+bool csum(Node *root)
+{
+    if(root==NULL)
+        return true;
+    if(root->left==NULL && root->right==NULL)
+        return true;
+
+    int sum=0;
+    if(root->left!=NULL)
+        sum=sum+root->left->key;
+    if(root->right!=NULL)
+        sum=sum+root->right->key;
+	
+    if(root->key!=sum)
+	return false;
+    return(csum(root->right) && csum(root->left));
+}
+
+
+* Balanced Binary Tree:
+  +ve value indicates binary tree is balanced.
+   -ve value indicates binary tree is unbalanced.
+ 
+int isbalanced(Node *root)
+{
+    if(!root)
+        return 0;
+    int l=isbalanced(root->left);
+    int r=isbalanced(root->right);
+    if(l==-1 || r==-1) 
+	return -1;
+
+    if(abs(l-r)>1)
+        return -1;
+    else    
+        return max(l,r)+1;
+} 
+
+
+* Maximum width of BT:
+int maxwidth(Node *root)
+{
+    if(root==NULL)
+        return 0;
+
+    queue<Node*>q;
+    q.push(root);
+    int ans=0;
+    while(!q.empty())
+    {
+        int k=q.size();
+        ans=max(ans,k);
+        for(int i=0;i<k;i++)
+        {
+            Node *temp=q.front();
+            q.pop();
+
+            if(temp->left!=NULL)
+                q.push(temp->left);
+            if(temp->right!=NULL)
+                q.push(temp->right);
+        }
+    }
+    return ans;
+}
+
+
+* Convert BT to DLL:
+The prev pointer of DLL is equivalent to the left pointer of tree.
+The next pointer of DLL is equivalent to the right pointer of tree.
+
+Node *bttodll(Node *root,Node *prev=NULL)
+{
+    if(root==NULL)
+        return NULL;
+    Node *head=bttodll(root->left);
+    
+    if(prev==NULL)
+        head=root;
+    else
+    {
+        root->left=prev;
+        prev->right=root;
+    }
+    prev=root;
+    bttodll(root->right,prev);
+    return head;
+}
+
+--> Diagonal Traversal:
+vector<int>dt(Node* root)
+{
+    vector<int>v;
+    if(root==NULL)
+        return v;
+
+    queue<Node*>q;
+    q.push(root);
+    while(!q.empty())
+    {
+        Node *temp=q.front();
+        q.pop();
+
+        while(temp){
+            v.push_back(temp->data);
+            if(temp->left)
+                q.push(temp->left);
+            temp=temp->right;
+        }
+    }
+    return v;
+}
+
+--> Diameter of Binary Tree:
+int height(Node *root)
+    {
+        if(root==NULL)
+            return 0;
+        return 1+max(height(root->left),height(root->right));
+    }
+    int diameter(Node* root) {
+        if(root==NULL)
+            return 0;
+            
+        int k1=1+height(root->left)+height(root->right);
+        int k2=diameter(root->left);
+        int k3=diameter(root->right);
+        
+        return max(k1,max(k2,k3));
+    }
+
+--> Create a BT from Inorder and Preorder:
+int preIndex=0;
+Node *ctree(int in[],int pre[],int is,int ie)
+{
+    if(is>ie)
+        return NULL;
+
+    Node *root=new Node(pre[preIndex++]);
+    int inIndex=-1;
+    for(int i=is;i<=ie;i++)
+        if(in[i]==root->key)
+        {
+            inIndex=i;
+            break;
+        }
+    
+    root->left= ctree(in,pre,is,inIndex-1);
+    root->right= ctree(in,pre,inIndex-1,ie);
+    return root;
+}
