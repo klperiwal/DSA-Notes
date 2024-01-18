@@ -1,0 +1,26 @@
+// Minimum number of operations to conert the number to 1.
+
+// If number is even --> n=n/2
+// If number is odd --> n= n+1 or n=n-1
+
+int convertto1(long n)
+{
+	if(n<=0)
+		return -1;
+	
+	int res=0;
+	while(n!=1)
+	{
+		if(n==3)
+			return res+2;
+		if(n%2==0)
+			n=n/2;
+		else if(n%4==1)
+			n--;
+		else if(n%4==3)
+			n++;
+		
+		res++;
+	}
+	return res;
+}
